@@ -41,7 +41,7 @@ gulp.task('coffee', function(){
 
 // ファイル圧縮
 // 依存: jade, less, coffe
-gulp.task('compress', ['jade', 'less', 'coffee'], function(){
+gulp.task('build', ['jade', 'less', 'coffee'], function(){
     gulp.src(['./dist/*.html', './dist/*.css', './dist/*.js'])
         .pipe(gzip())
         .pipe(gulp.dest(DIST_DIR));
@@ -55,8 +55,8 @@ gulp.task('clean', function(callback){
 
 
 // ファイルを公開
-// 依存: compress
-gulp.task('deploy', ['compress'], function(){
+// 依存: build
+gulp.task('deploy', ['build'], function(){
   var pit = require('pit-ro');
   
   // 設定ファイルを記述する(Pitで管理)
