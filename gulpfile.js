@@ -6,6 +6,7 @@ var gulp = require('gulp'),
     coffee = require('gulp-coffee'),
     gzip = require('gulp-gzip'),
     plumber = require('gulp-plumber'),
+    ftp = require('vinyl-ftp'),
     rimraf = require('rimraf');
 
 var DIST_DIR = "./dist/";
@@ -23,6 +24,7 @@ gulp.task('jade', function(){
 // Less コンパイル
 gulp.task('less', function(){
     gulp.src(['src/less/*.less'])
+        .pipe(plumber())
         .pipe(less())
         .pipe(gulp.dest(DIST_DIR));
 });
@@ -31,9 +33,10 @@ gulp.task('less', function(){
 // Coffee コンパイル
 gulp.task('coffee', function(){
     gulp.src(['src/coffee/*.coffee'])
+        .pipe(plumber())
         .pipe(coffee())
         .pipe(gulp.dest(DIST_DIR));
-})
+});
 
 
 // ファイル圧縮
@@ -47,24 +50,39 @@ gulp.task('compress', ['jade', 'less', 'coffee'], function(){
 
 // 生成されるファイルを削除
 gulp.task('clean', function(callback){
-   rimraf('./dist', callback); 
+   rimraf('./dist/*', callback);
 });
 
 
 // ファイルを公開
 // 依存: compress
 gulp.task('deploy', ['compress'], function(){
-  // TODO: ftp でのアップロード処理をここに書く
+  var pit = require('pit-ro');
+  
+  // 設定ファイルを記述する(Pitで管理)
+  // @see https://www.npmjs.com/package/pit-ro
+  pit.pitDir = '.';
+  var config = pit.get('ftp.ninjam.jp', 'config');
+
+  // 以下のコードは未テスト
+
+  var conn = ftp.create({
+    host: config.host,
+    user: config.user,
+    password: config.password,
+  });
+
+  return gulp.src(['./dist/**'], {buffer: false})
+    .pipe(conn.dest(config.upload_path));
 });
 
 // ファイル監視
 gulp.task('watch', function(){
     gulp.watch('src/jade/*.jade', ['jade']);
-    gulp.watch('src/less/*.less', ['less']); 
-    gulp.watch('src/coffee/*.coffee', ['coffee']); 
+    gulp.watch('src/less/*.less', ['less']);
+    gulp.watch('src/coffee/*.coffee', ['coffee']);
 });
 
 
 // デフォルトで実行されるタスク
 gulp.task('default', ['jade', 'less', 'coffee', 'watch']);
-
