@@ -57,23 +57,23 @@ gulp.task('clean', function(callback){
 // ファイルを公開
 // 依存: build
 gulp.task('deploy', ['build'], function(){
-  var pit = require('pit-ro');
+    var pit = require('pit-ro');
   
-  // 設定ファイルを記述する(Pitで管理)
-  // @see https://www.npmjs.com/package/pit-ro
-  pit.pitDir = '.';
-  var config = pit.get('ftp.example.jp', 'config');
+    // 設定ファイルを記述する(Pitで管理)
+    // @see https://www.npmjs.com/package/pit-ro
+    pit.pitDir = '.';
+    var config = pit.get('ftp.example.jp', 'config');
 
-  // 以下のコードは未テスト
+    // 以下のコードは未テスト
 
-  var conn = ftp.create({
-    host: config.host,
-    user: config.user,
-    password: config.password,
-  });
+    var conn = ftp.create({
+        host: config.host,
+        user: config.user,
+        password: config.password,
+    });
 
-  return gulp.src(['./dist/**'], {buffer: false})
-    .pipe(conn.dest(config.upload_path));
+    return gulp.src(['./dist/**'], {buffer: false})
+        .pipe(conn.dest(config.upload_path));
 });
 
 // ファイル監視
