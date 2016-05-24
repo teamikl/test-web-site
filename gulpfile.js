@@ -6,7 +6,7 @@ var gulp = require('gulp'),
     coffee = require('gulp-coffee'),
     gzip = require('gulp-gzip'),
     util = require('gulp-util'),
-    debug = require('gulp-debug'),
+    // debug = require('gulp-debug'),
     plumber = require('gulp-plumber'),
     ftp = require('vinyl-ftp'),
     rimraf = require('rimraf');
@@ -47,7 +47,7 @@ gulp.task('compile:all', ['jade', 'less', 'coffee']);
 // 依存: jade, less, coffe
 gulp.task('compress:dist', ['compile:all'], function(){
     return gulp.src(['./dist/*.html', './dist/*.css', './dist/*.js'])
-        .pipe(debug())
+        // .pipe(debug())
         .pipe(gzip())
         .pipe(gulp.dest(DIST_DIR));
 });

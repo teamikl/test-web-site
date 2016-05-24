@@ -1,14 +1,18 @@
 # test-web-site
-Test working space for web site project
 
 
-## init node project
+このプロジェクトのgulpで利用できるタスク
+
+- jade/less/coffee のコンパイル
+- watch ... ファイル更新を監視してコンパイル
+- compress:dist ... gzip圧縮
+- clean:dist ... 生成されたファイルを削除
+- deploy ... ftpでアップロート
 
 
-```
-  > npm update
-```
+## packages.json について
 
+devDependencies
 
 
 ## FTP について
@@ -40,4 +44,36 @@ rebase で履歴を修正したのち、push --forceで強制上書きと対策�
   
 
 パスワードの暗号化については、別途対策する必要あり。SFTPの利用も検討。
+
+
+## 設定ファイルの読み込み
+
+
+```js
+    pit.pitDir = '.';
+    var config = pit.get('ftp.example.jp', 'config');
+```
+
+このサンプルでは、プロジェクト内の config.yaml を読み込むため、
+
+
+```js
+    var config = pit.get('ftp.ninjam.jp', 'ninjam-jp');
+```
+
+のように変更。~/.pit/ninjam-jp.yaml が読み込まれるようになります。
+
+
+サブドメイン名は便宜上のセクション名として使うだけなので、
+実際に DNS の設定等は必要ありません。
+
+設定ファイルは YAML 形式で記述します。
+
+```yaml
+ftp.ninjam.jp:
+    host: 127.0.0.1
+    user: guest
+    password: guest
+    upload_path: public_html
+```
 
